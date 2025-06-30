@@ -19,3 +19,12 @@ variable "project" {
 variable "environment" {
   default = "dev"
 }
+
+variable "bastion_sg_name" {
+    default = "allow--ssh"
+  
+}
+variable "bastion_sg_description" {
+    default = "allow ingress traffic for ssh and all outgoing traffic"
+  
+}
