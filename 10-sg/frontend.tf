@@ -3,7 +3,7 @@ module "frontend" {
     sg_name = var.frontend_sg_name
     sg_description = var.frontend_sg_description
     #vpc_id = data.aws_vpc.main.id
-    vpc_id = data.aws_ssm_parameter.vpc_id.value
+    vpc_id = local.vpc_id
     project = var.project
     environment = var.environment
     

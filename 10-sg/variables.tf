@@ -13,7 +13,7 @@ variable "frontend_sg_description" {
 } */
 
 variable "project" {
-    default = "roboshop"
+    default = "roboshop-infra"
   
 }
 variable "environment" {
