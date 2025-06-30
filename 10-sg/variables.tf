@@ -21,7 +21,7 @@ variable "environment" {
 }
 
 variable "bastion_sg_name" {
-    default = "allow--ssh"
+    default = "allow-ssh"
   
 }
 variable "bastion_sg_description" {
