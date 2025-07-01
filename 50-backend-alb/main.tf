@@ -13,10 +13,6 @@ module "alb" {
   })
 }
 
-resource "aws_lb" "front_end" {
-  # ...
-}
-
 resource "aws_lb_listener" "backend_alb_listener" {
   load_balancer_arn = module.alb.arn
   port              = "80"
