@@ -26,5 +26,13 @@ variable "bastion_sg_name" {
 }
 variable "bastion_sg_description" {
     default = "allow ingress traffic for ssh and all outgoing traffic"
+}
+
+variable "backend_sg_name" {
+    default = "allow-http-from-bastion"
+  
+}
+variable "backend_sg_description" {
+    default = "allow ingress traffic for http and all outgoing traffic"
   
 }

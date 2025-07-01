@@ -1,0 +1,34 @@
+module "alb" {
+  source = "terraform-aws-modules/alb/aws"
+  internal = true
+  version = "9.16.0"
+  name    = "${var.project}-${var.environment}-backend-alb"
+  vpc_id  = local.vpc_id
+  subnets = local.roboshop_private_subnet_ids
+  create_security_group = false
+  security_groups = local.backend_alb_sg_id
+  tags = merge(local.common_tags,{
+    Name = "${var.project}-${var.environment}-backend-alb"
+
+  })
+}
+
+resource "aws_lb" "front_end" {
+  # ...
+}
+
+resource "aws_lb_listener" "backend_alb_listener" {
+  load_balancer_arn = module.alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/html"
+      message_body = "<h1>Hello I'm from the backend-alb-listener navigation</h1>"
+      status_code  = "200"
+    }
+  }
+}
