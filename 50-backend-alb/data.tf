@@ -3,17 +3,16 @@ data "aws_ssm_parameter" "vpc_id" {
     name = "/${var.project}/${var.environment}/vpc_id"
 }
 
-#fetch our roboshop-infra VPC Private subnets
-data "aws_ssm_parameter" "roboshop_private_subnet_ids"{
-    name = "/${var.project}/${var.environment}/roboshop_public_subnet_ids"
-}
-
-
 data "aws_ssm_parameter" "bastion_sg_id"{
     name = "/${var.project}/${var.environment}/bastion_sg_id"
 }
 
 data "aws_ssm_parameter" "roboshop_public_subnet_ids"{
+    name = "/${var.project}/${var.environment}/roboshop_public_subnet_ids"
+}
+
+#fetch our roboshop-infra VPC Private subnets
+data "aws_ssm_parameter" "roboshop_private_subnet_ids"{
     name = "/${var.project}/${var.environment}/roboshop_public_subnet_ids"
 }
 
