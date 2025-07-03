@@ -9,3 +9,7 @@ output "bastion_security_group_id" {
 output "backend_alb_security_group_id" {
     value = module.backend_alb.sg_id
 }
+
+output "vpn_security_group_id" {
+    value = module.vpn.sg_id
+}

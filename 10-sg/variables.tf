@@ -36,3 +36,12 @@ variable "backend_sg_description" {
     default = "allow ingress traffic for http and all outgoing traffic"
   
 }
+
+variable "vpn_sg_name" {
+    default = "vpn"
+  
+}
+variable "vpn_sg_description" {
+    default = "VPN is for Forward proxy "
+  
+}
