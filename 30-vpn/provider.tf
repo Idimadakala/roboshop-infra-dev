@@ -7,7 +7,7 @@ terraform {
   }
   backend "s3" {
     bucket       = "roboshop-infra-joindevsecops-dev"
-    key          = "module-vpc-bastion"
+    key          = "roboshop-module-vpn"
     region       = "us-east-1"
     encrypt      = true
     use_lockfile = true

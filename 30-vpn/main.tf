@@ -1,3 +1,9 @@
+# aws key-pair creation
+resource "aws_key_pair" "openvpn" {
+  key_name   = "openvpn"
+  public_key = file("C:\\Users\\saisr\\OneDrive\\Documents\\ssi-solutions\\openvpn.pub")
+}
+
 resource "aws_instance" "vpn" {
   ami = local.ami_id
   instance_type = var.instance_type
@@ -15,7 +21,3 @@ resource "aws_instance" "vpn" {
   )
 }
 
-resource "aws_key_pair" "openvpn" {
-  key_name   = "openvpn"
-  public_key = file("C:\\devops\\daws-84s\\openvpn.pub") # for mac use /
-}
