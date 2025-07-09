@@ -52,7 +52,6 @@ resource "aws_security_group_rule" "backend_alb_bastion" {
 }
 
 # create sg for vpn
-
 module "vpn" {
     source = "git::https://github.com/Idimadakala/terrafrom-aws-resources.git//modules/securitygroup?ref=develop"
     sg_name = var.vpn_sg_name
@@ -64,39 +63,34 @@ module "vpn" {
 }
 
 # open vpn ports on - 22,443,1194,943
-# use dynamic block for assignment
-resource "aws_security_group_rule" "vpn_ssh" {
+resource "aws_security_group_rule" "vpn_open_ports" {
+  count = length(var.vpn_ports)
   type              = "ingress"
-  from_port         = 22
-  to_port           = 22
+  from_port         = var.vpn_ports[count.index]
+  to_port           = var.vpn_ports[count.index]
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = module.vpn.sg_id
 }
 
-resource "aws_security_group_rule" "vpn_https" {
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.vpn.sg_id
+# create sg for mongodb db
+module "vpn" {
+    source = "git::https://github.com/Idimadakala/terrafrom-aws-resources.git//modules/securitygroup?ref=develop"
+    sg_name = var.mongodb_sg_name
+    sg_description = var.mongodb_sg_description
+    vpc_id = local.vpc_id
+    project = var.project
+    environment = var.environment
 }
 
-resource "aws_security_group_rule" "vpn_port_1194" {
+# open port 22 for mongodb
+resource "aws_security_group_rule" "mongodb_open_ports" {
+  count = length(var.mongodb_vpn_ports)
   type              = "ingress"
-  from_port         = 1194
-  to_port           = 1194
+  from_port         = var.mongodb_vpn_ports[count.index]
+  to_port           = var.mongodb_vpn_ports[count.index]
   protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.vpn.sg_id
+  source_security_group_id = module.vpn.sg_id
+  security_group_id = module.mongodb.sg_id
 }
 
-resource "aws_security_group_rule" "vpn_port_943" {
-  type              = "ingress"
-  from_port         = 943
-  to_port           = 943
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.vpn.sg_id
-}

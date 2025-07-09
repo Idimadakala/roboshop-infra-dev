@@ -13,3 +13,7 @@ output "backend_alb_security_group_id" {
 output "vpn_security_group_id" {
     value = module.vpn.sg_id
 }
+
+output "mongodb_security_group_id" {
+    value = module.mongodb.sg_id
+}

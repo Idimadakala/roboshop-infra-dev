@@ -42,6 +42,22 @@ variable "vpn_sg_name" {
   
 }
 variable "vpn_sg_description" {
-    default = "VPN is for Forward proxy "
+    default = "VPN is for Forward proxy "  
+}
+
+variable "mongodb_sg_name" {
+    default = "mongodb"
+  
+}
+variable "mongodb_sg_description" {
+    default = "for mongodb"  
+}
+
+variable "mongodb_vpn_ports" {
+    default = [22,27017]
+}
+
+variable "vpn_ports" {
+    default = [22,443,1194,943]
   
 }
