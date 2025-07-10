@@ -61,3 +61,39 @@ variable "vpn_ports" {
     default = [22,443,1194,943]
   
 }
+
+variable "redis_sg_name" {
+    default = "redis"
+  
+}
+variable "redis_sg_description" {
+    default = "for redis"  
+}
+
+variable "redis_ports" {
+    default = [22,6379]
+}
+
+variable "mysql_sg_name" {
+    default = "mysql"
+  
+}
+variable "mysql_sg_description" {
+    default = "for mysql"  
+}
+
+variable "mysql_ports" {
+    default = [22,3306]
+}
+
+variable "rabbitmq_sg_name" {
+    default = "rabbitmq"
+  
+}
+variable "rabbitmq_sg_description" {
+    default = "for rabbitmq"  
+}
+
+variable "rabbitmq_ports" {
+    default = [22,5672]
+}

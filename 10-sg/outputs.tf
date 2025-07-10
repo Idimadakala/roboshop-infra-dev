@@ -17,3 +17,15 @@ output "vpn_security_group_id" {
 output "mongodb_security_group_id" {
     value = module.mongodb.sg_id
 }
+
+output "redis_security_group_id" {
+    value = module.redis.sg_id
+}
+
+output "mysql_security_group_id" {
+    value = module.mysql.sg_id
+}
+
+output "rabbitmq_security_group_id" {
+    value = module.rabbitmq.sg_id
+}
