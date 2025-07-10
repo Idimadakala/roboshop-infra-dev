@@ -29,6 +29,17 @@ resource "aws_security_group_rule" "bastion_laptop" {
   security_group_id = module.bastion.sg_id
 }
 
+# backend ALB accepting connections from my bastion host on port no 80
+resource "aws_security_group_rule" "backend_alb_bastion" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  #cidr_blocks       = ["0.0.0.0/0"]
+  source_security_group_id = module.bastion.sg_id
+  security_group_id = module.backend_alb.sg_id
+}
+
 #backend_alb
 module "backend_alb" {
     source = "git::https://github.com/Idimadakala/terrafrom-aws-resources.git//modules/securitygroup?ref=develop"
@@ -40,14 +51,14 @@ module "backend_alb" {
     environment = var.environment
 }
 
-# backend ALB accepting connections from my bastion host on port no 80
-resource "aws_security_group_rule" "backend_alb_bastion" {
+# backend ALB accepting connections from vpn on port no 80
+resource "aws_security_group_rule" "backend_alb_vpn" {
   type              = "ingress"
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
   #cidr_blocks       = ["0.0.0.0/0"]
-  source_security_group_id = module.bastion.sg_id
+  source_security_group_id = module.vpn.sg_id
   security_group_id = module.backend_alb.sg_id
 }
 
@@ -133,7 +144,7 @@ resource "aws_security_group_rule" "mysql_open_ports" {
   to_port           = var.mysql_ports[count.index]
   protocol          = "tcp"
   source_security_group_id = module.vpn.sg_id
-  security_group_id = module.redis.sg_id
+  security_group_id = module.mysql.sg_id
 }
 
 # create sg for rabbitmq
@@ -154,7 +165,7 @@ resource "aws_security_group_rule" "rabbitmq_open_ports" {
   to_port           = var.rabbitmq_ports[count.index]
   protocol          = "tcp"
   source_security_group_id = module.vpn.sg_id
-  security_group_id = module.redis.sg_id
+  security_group_id = module.rabbitmq.sg_id
 }
 
 # services - 

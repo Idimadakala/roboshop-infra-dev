@@ -29,7 +29,7 @@ variable "bastion_sg_description" {
 }
 
 variable "backend_sg_name" {
-    default = "allow-http-from-bastion"
+    default = "allow-http-from-backend"
   
 }
 variable "backend_sg_description" {
@@ -45,6 +45,10 @@ variable "vpn_sg_description" {
     default = "VPN is for Forward proxy "  
 }
 
+variable "vpn_ports" {
+    default = [22,443,1194,943]  
+}
+
 variable "mongodb_sg_name" {
     default = "mongodb"
   
@@ -55,11 +59,6 @@ variable "mongodb_sg_description" {
 
 variable "mongodb_vpn_ports" {
     default = [22,27017]
-}
-
-variable "vpn_ports" {
-    default = [22,443,1194,943]
-  
 }
 
 variable "redis_sg_name" {

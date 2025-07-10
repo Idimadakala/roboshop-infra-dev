@@ -11,7 +11,7 @@ variable "environment" {
   default = "dev"
 }
 
-variable "vpn_tags" {
+variable "mongodb_tags" {
     type = map(string)
     default = {}
   

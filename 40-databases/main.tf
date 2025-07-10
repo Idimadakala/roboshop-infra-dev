@@ -6,7 +6,7 @@ resource "aws_instance" "mongodb" {
   vpc_security_group_ids = [local.mongodb_sg_id]
   # I want to create this instance in roboshop VPC database subnet, how to get the public subnet ? data source
   subnet_id = local.roboshop_database_subnet_id
-  tags = merge(var.vpn_tags,
+  tags = merge(var.mongodb_tags,
     local.common_tags,{
     Name = "${var.project}-${var.environment}-mongodb"
   }
@@ -21,8 +21,8 @@ resource "terraform_data" "mongodb" {
   ]
 
   provisioner "file" {
-    source = "mongodb.sh"
-    destination = "/tmp/mongodb.sh"
+    source = "bootstrap.sh"
+    destination = "/tmp/bootstrap.sh"
   }
 
   connection {
@@ -35,8 +35,8 @@ resource "terraform_data" "mongodb" {
 
   provisioner "remote-exec" {
     inline = [ 
-      "chmod +x /tmp/mongodb.sh",
-      "sudo sh /tmp/mongodb.sh"
+      "chmod +x /tmp/bootstrap.sh",
+      "sudo sh /tmp/bootstrap.sh mongodb ${var.environment}"
      ]
   }
 }

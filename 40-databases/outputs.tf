@@ -1,3 +1,3 @@
-output "vpn_instance_id"{
-    value = aws_instance.vpn.id
+output "mongodb_instance_id"{
+    value = aws_instance.mongodb.id
 }
