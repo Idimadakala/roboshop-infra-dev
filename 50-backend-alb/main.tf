@@ -10,7 +10,6 @@ module "alb" {
   enable_deletion_protection = false
   tags = merge(local.common_tags,{
     Name = "${var.project}-${var.environment}-backend-alb"
-
   })
 }
 
