@@ -1,12 +1,11 @@
 # joindevops ami_id
 data "aws_ami" "mongodb" {
-  owners            = ["679593333241"]
-  most_recent       = true
+  owners           = ["973714476881"]
+  most_recent      = true
 
   filter {
     name   = "name"
-    #values = ["OpenVPN Access Server Community Image-8fbe3379-*"]
-    values = ["OpenVPN Access Server Community Image-8fbe3379-63b6-43e8-87bd-0e93fd7be8f3"]
+    values = ["RHEL-9-DevOps-Practice"]
   }
 
   filter {
