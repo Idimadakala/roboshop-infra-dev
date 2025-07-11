@@ -1,3 +1,4 @@
+#frontend-sg
 module "frontend" {
     source = "git::https://github.com/Idimadakala/terrafrom-aws-resources.git//modules/securitygroup?ref=develop"
     sg_name = var.frontend_sg_name
@@ -8,7 +9,7 @@ module "frontend" {
     environment = var.environment
 }
 
-#bastion
+#bastion-sg
 module "bastion" {
     source = "git::https://github.com/Idimadakala/terrafrom-aws-resources.git//modules/securitygroup?ref=develop"
     sg_name = var.bastion_sg_name
@@ -45,7 +46,6 @@ module "backend_alb" {
     source = "git::https://github.com/Idimadakala/terrafrom-aws-resources.git//modules/securitygroup?ref=develop"
     sg_name = var.backend_sg_name
     sg_description = var.backend_sg_description
-    #vpc_id = data.aws_vpc.main.id
     vpc_id = local.vpc_id
     project = var.project
     environment = var.environment
