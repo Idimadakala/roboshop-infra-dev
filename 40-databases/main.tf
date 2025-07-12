@@ -77,12 +77,15 @@ resource "terraform_data" "redis" {
 }
 
 # create mysql instance in the database subnet
+# fetch the role
+
 resource "aws_instance" "mysql" {
   ami = local.ami_id
   instance_type = var.instance_type
   vpc_security_group_ids = [local.mysql_sg_id]
   # I want to create this instance in roboshop VPC database subnet, how to get the public subnet ? data source
   subnet_id = local.roboshop_database_subnet_id
+  iam_instance_profile = local.ec2_role_to_fetch_ssm_params
   tags = merge(local.common_tags,
   {
     Name = "${var.project}-${var.environment}-mysql"

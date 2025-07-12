@@ -38,3 +38,8 @@ data "aws_ssm_parameter" "rabbitmq_sg_id"{
 data "aws_ssm_parameter" "roboshop_database_subnet_ids"{
     name = "/${var.project}/${var.environment}/roboshop_database_subnet_ids"
 }
+
+#fetch the role for ec2
+data "aws_iam_role" "ec2_role_to_fetch_ssm_params" {
+  name = "ec2-role-to-fetch-ssm-params"
+}
