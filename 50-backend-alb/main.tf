@@ -12,7 +12,7 @@ module "alb" {
     Name = "${var.project}-${var.environment}-backend-alb"
   })
 }
-
+#fixed_response for backend-alb-listener
 resource "aws_lb_listener" "backend_alb_listener" {
   load_balancer_arn = module.alb.arn
   port              = "80"
@@ -26,5 +26,18 @@ resource "aws_lb_listener" "backend_alb_listener" {
       message_body = "<h1>Hello I'm from the backend-alb-listener navigation</h1>"
       status_code  = "200"
     }
+  }
+}
+
+# Alias record for the ALB in Route 53
+resource "aws_route53_record" "backend_alb_alias" {
+  zone_id = var.zone_id
+  name    = "*.backend-${var.environment}.${var.zone_name}"
+  type    = "A"
+
+  alias {
+    name                   = module.alb.dns_name # dns name of the ALB
+    zone_id                = module.alb.zone_id # zone ID of the ALB
+    evaluate_target_health = true
   }
 }

@@ -180,6 +180,54 @@ module "catalogue" {
     vpc_id = local.vpc_id
 }
 
+# ingress rules for catalogue service on ports - 8080, vpn - 22, 8080 and bastion - 22
+resource "aws_security_group_rule" "catalogue_ingress" {
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.backend_alb.sg_id # source security group
+  security_group_id = module.catalogue.sg_id # its own source security group
+}
+
+resource "aws_security_group_rule" "catalogue_ingress_vpn_ssh" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id # source security group
+  security_group_id = module.catalogue.sg_id # its own source security group
+}
+
+resource "aws_security_group_rule" "catalogue_ingress_vpn_http" {
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id # source security group
+  security_group_id = module.catalogue.sg_id # its own source security group
+}
+
+resource "aws_security_group_rule" "catalogue_ingress_bastion_ssh" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  source_security_group_id = module.bastion.sg_id # source security group
+  security_group_id = module.catalogue.sg_id # its own source security group
+}
+
+# egress rules for catalogue service on port 27017 for mongodb
+resource "aws_security_group_rule" "catalogue_egress_mongodb" {
+  type              = "egress"
+  from_port         = 27017
+  to_port           = 27017
+  protocol          = "tcp"
+  source_security_group_id = module.catalogue.sg_id # its own source security group
+  security_group_id = module.mongodb.sg_id # destination security group
+}
+
+
 #user
 module "user" {
     source = "git::https://github.com/daws-84s/terraform-aws-securitygroup.git?ref=main"
