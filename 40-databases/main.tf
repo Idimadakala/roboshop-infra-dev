@@ -77,7 +77,7 @@ resource "terraform_data" "redis" {
 }
 
 # create mysql instance in the database subnet
-/*resource "aws_instance" "mysql" {
+resource "aws_instance" "mysql" {
   ami = local.ami_id
   instance_type = var.instance_type
   vpc_security_group_ids = [local.mysql_sg_id]
@@ -112,7 +112,7 @@ resource "terraform_data" "redis" {
       "sudo sh /tmp/bootstrap.sh mysql ${var.environment}"
      ]
   }
-}*/
+}
 
 # create rabbitmq instance in the database subnet
 resource "aws_instance" "rabbitmq" {
