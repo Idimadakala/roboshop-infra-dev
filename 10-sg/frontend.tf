@@ -94,14 +94,35 @@ module "mongodb" {
     environment = var.environment
 }
 
-# open port 22,27017 for mongodb
-resource "aws_security_group_rule" "mongodb_open_ports" {
+# open port 22,27017 for mongodb-vpn
+resource "aws_security_group_rule" "mongodb_open_ports_vpn" {
   count = length(var.mongodb_vpn_ports)
   type              = "ingress"
   from_port         = var.mongodb_vpn_ports[count.index]
   to_port           = var.mongodb_vpn_ports[count.index]
   protocol          = "tcp"
   source_security_group_id = module.vpn.sg_id
+  security_group_id = module.mongodb.sg_id
+}
+
+# open port 22,27017 for mongodb-bastion
+resource "aws_security_group_rule" "mongodb_bastion" {
+  count = length(var.mongodb_vpn_ports)
+  type              = "ingress"
+  from_port         = var.mongodb_vpn_ports[count.index]
+  to_port           = var.mongodb_vpn_ports[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.bastion.sg_id
+  security_group_id = module.mongodb.sg_id
+}
+
+# open port 27017 for mongodb-catalogue
+resource "aws_security_group_rule" "mongodb_catalogue" {
+  type              = "ingress"
+  from_port         = 27017
+  to_port           = 27017
+  protocol          = "tcp"
+  source_security_group_id = module.catalogue.sg_id
   security_group_id = module.mongodb.sg_id
 }
 
@@ -180,17 +201,17 @@ module "catalogue" {
     vpc_id = local.vpc_id
 }
 
-# ingress rules for catalogue service on ports - 8080, vpn - 22, 8080 and bastion - 22
-resource "aws_security_group_rule" "catalogue_ingress" {
+resource "aws_security_group_rule" "catalogue_vpn_http" {
   type              = "ingress"
   from_port         = 8080
   to_port           = 8080
   protocol          = "tcp"
-  source_security_group_id = module.backend_alb.sg_id # source security group
+  source_security_group_id = module.vpn.sg_id # source security group
   security_group_id = module.catalogue.sg_id # its own source security group
 }
 
-resource "aws_security_group_rule" "catalogue_ingress_vpn_ssh" {
+# catalogue - vpn - 22,8080
+resource "aws_security_group_rule" "catalogue_vpn_ssh" {
   type              = "ingress"
   from_port         = 22
   to_port           = 22
@@ -199,16 +220,8 @@ resource "aws_security_group_rule" "catalogue_ingress_vpn_ssh" {
   security_group_id = module.catalogue.sg_id # its own source security group
 }
 
-resource "aws_security_group_rule" "catalogue_ingress_vpn_http" {
-  type              = "ingress"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "tcp"
-  source_security_group_id = module.vpn.sg_id # source security group
-  security_group_id = module.catalogue.sg_id # its own source security group
-}
-
-resource "aws_security_group_rule" "catalogue_ingress_bastion_ssh" {
+#catalogue - bastion: 22
+resource "aws_security_group_rule" "catalogue_bastion_ssh" {
   type              = "ingress"
   from_port         = 22
   to_port           = 22
@@ -217,7 +230,17 @@ resource "aws_security_group_rule" "catalogue_ingress_bastion_ssh" {
   security_group_id = module.catalogue.sg_id # its own source security group
 }
 
-# egress rules for catalogue service on port 27017 for mongodb
+# ingress rules for catalogue service on ports - 8080, vpn - 22, 8080 and bastion - 22
+resource "aws_security_group_rule" "catalogue_backend_alb_http" {
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.backend_alb.sg_id # source security group
+  security_group_id = module.catalogue.sg_id # its own source security group
+}
+
+/* # egress rules for catalogue service on port 27017 for mongodb
 resource "aws_security_group_rule" "catalogue_egress_mongodb" {
   type              = "egress"
   from_port         = 27017
@@ -225,7 +248,7 @@ resource "aws_security_group_rule" "catalogue_egress_mongodb" {
   protocol          = "tcp"
   source_security_group_id = module.catalogue.sg_id # its own source security group
   security_group_id = module.mongodb.sg_id # destination security group
-}
+} */
 
 
 #user
