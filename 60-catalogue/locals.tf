@@ -1,6 +1,6 @@
 locals {
   ami_id = data.aws_ami.catalogue.id
-  vpc_id = data.aws_ssm_parameter.vpc_id.id
+  vpc_id = data.aws_ssm_parameter.vpc_id.value
   roboshop_private_subnet_ids = split(",",data.aws_ssm_parameter.roboshop_private_subnet_ids.value)
   #backend_alb_sg_id = data.aws_ssm_parameter.backend_alb_sg_id.value
   catalogue_sg_id = data.aws_ssm_parameter.catalogue_sg_id.value
