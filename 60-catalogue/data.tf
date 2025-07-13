@@ -19,7 +19,7 @@ data "aws_ami" "catalogue" {
   }
 }
 
-#fetch our roboshop vpc_id for ALB
+#fetch our roboshop vpc_id
 data "aws_ssm_parameter" "vpc_id" {
     name = "/${var.project}/${var.environment}/vpc_id"
 }

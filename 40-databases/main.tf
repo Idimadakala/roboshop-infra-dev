@@ -1,4 +1,3 @@
-
 # create mongodb instance in the database subnet
 resource "aws_instance" "mongodb" {
   ami = local.ami_id
@@ -37,6 +36,15 @@ resource "terraform_data" "mongodb" {
   }
 }
 
+# create aws_route53_record for mongodb
+resource "aws_route53_record" "mongodb_db_record" {
+  zone_id = var.zone_id
+  name    = "mongodb-${var.environment}.${var.zone_name}"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.mongodb.private_ip]
+  allow_overwrite = true
+}
 
 # create redis instance in the database subnet
 resource "aws_instance" "redis" {
@@ -76,9 +84,18 @@ resource "terraform_data" "redis" {
   }
 }
 
-# create mysql instance in the database subnet
-# fetch the role
+# create aws_route53_record for redis
+resource "aws_route53_record" "redis_db_record" {
+  zone_id = var.zone_id
+  name    = "redis-${var.environment}.${var.zone_name}"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.redis.private_ip]
+  allow_overwrite = true
+}
 
+# create mysql instance in the database subnet
+# fetch the role to fetch ssm parameters
 resource "aws_instance" "mysql" {
   ami = local.ami_id
   instance_type = var.instance_type
@@ -117,6 +134,16 @@ resource "aws_instance" "mysql" {
   }
 }
 
+# create aws_route53_record for mysql
+resource "aws_route53_record" "mysql_db_record" {
+  zone_id = var.zone_id
+  name    = "mysql-${var.environment}.${var.zone_name}"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.mysql.private_ip]
+  allow_overwrite = true
+}
+
 # create rabbitmq instance in the database subnet
 resource "aws_instance" "rabbitmq" {
   ami = local.ami_id
@@ -153,4 +180,14 @@ resource "terraform_data" "rabbitmq" {
       "sudo sh /tmp/bootstrap.sh rabbitmq ${var.environment}"
      ]
   }
+}
+
+# create aws_route53_record for rabbitmq
+resource "aws_route53_record" "rabbitmq_db_record" {
+  zone_id = var.zone_id
+  name    = "rabbitmq-${var.environment}.${var.zone_name}"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.rabbitmq.private_ip]
+  allow_overwrite = true
 }

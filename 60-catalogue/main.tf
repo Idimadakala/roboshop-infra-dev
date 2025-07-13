@@ -4,7 +4,8 @@ resource "aws_lb_target_group" "catalogue" {
   port     = var.target_group_port
   protocol = "HTTP"
   vpc_id   = local.vpc_id
-
+  deregistration_delay = 120
+  
   health_check {
     path                = "/health"
     interval            = 5
@@ -33,7 +34,7 @@ resource "aws_instance" "catalogue_service" {
 
 resource "terraform_data" "catalogue" {
   triggers_replace = [
-    aws_instance.catalogue.id
+    aws_instance.catalogue_service.id
   ]
   
   provisioner "file" {
