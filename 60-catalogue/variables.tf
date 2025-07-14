@@ -17,3 +17,11 @@ variable "target_group_port" {
 variable "instance_type" {
   default = "t3.micro"
 }
+
+variable "zone_id" {
+  default = "Z03703982MKCR7DNXKOPG"
+}
+
+variable "zone_name" {
+  default = "jsprajampeta.org"
+}

@@ -9,6 +9,63 @@ module "frontend" {
     environment = var.environment
 }
 
+# frontend_alb
+module "frontend_alb" {
+    source = "git::https://github.com/Idimadakala/terrafrom-aws-resources.git//modules/securitygroup?ref=develop"
+    project = var.project
+    environment = var.environment
+    sg_name = "frontend-alb"
+    sg_description = "for frontend alb"
+    vpc_id = local.vpc_id
+}
+
+#Frontend ALB
+resource "aws_security_group_rule" "frontend_alb_http" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = module.backend_alb.sg_id
+}
+
+resource "aws_security_group_rule" "frontend_alb_https" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = module.frontend_alb.sg_id
+}
+
+#Frontend
+resource "aws_security_group_rule" "frontend_vpn" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id = module.frontend.sg_id
+}
+
+resource "aws_security_group_rule" "frontend_bastion" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  source_security_group_id = module.bastion.sg_id
+  security_group_id = module.frontend.sg_id
+}
+
+resource "aws_security_group_rule" "frontend_frontend_alb" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  source_security_group_id = module.frontend_alb.sg_id
+  security_group_id = module.frontend.sg_id
+}
+
 #bastion-sg
 module "bastion" {
     source = "git::https://github.com/Idimadakala/terrafrom-aws-resources.git//modules/securitygroup?ref=develop"
@@ -30,17 +87,6 @@ resource "aws_security_group_rule" "bastion_laptop" {
   security_group_id = module.bastion.sg_id
 }
 
-# backend ALB accepting connections from my bastion host on port no 80
-resource "aws_security_group_rule" "backend_alb_bastion" {
-  type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-  #cidr_blocks       = ["0.0.0.0/0"]
-  source_security_group_id = module.bastion.sg_id
-  security_group_id = module.backend_alb.sg_id
-}
-
 #backend_alb
 module "backend_alb" {
     source = "git::https://github.com/Idimadakala/terrafrom-aws-resources.git//modules/securitygroup?ref=develop"
@@ -49,6 +95,42 @@ module "backend_alb" {
     vpc_id = local.vpc_id
     project = var.project
     environment = var.environment
+}
+
+resource "aws_security_group_rule" "backend_alb_frontend" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  source_security_group_id = module.frontend.sg_id
+  security_group_id = module.backend_alb.sg_id
+}
+
+resource "aws_security_group_rule" "backend_alb_cart" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  source_security_group_id = module.cart.sg_id
+  security_group_id = module.backend_alb.sg_id
+}
+
+resource "aws_security_group_rule" "backend_alb_shipping" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  source_security_group_id = module.shipping.sg_id
+  security_group_id = module.backend_alb.sg_id
+}
+
+resource "aws_security_group_rule" "backend_alb_payment" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  source_security_group_id = module.payment.sg_id
+  security_group_id = module.backend_alb.sg_id
 }
 
 # backend ALB accepting connections from vpn on port no 80
@@ -61,6 +143,18 @@ resource "aws_security_group_rule" "backend_alb_vpn" {
   source_security_group_id = module.vpn.sg_id
   security_group_id = module.backend_alb.sg_id
 }
+
+# backend ALB accepting connections from my bastion host on port no 80
+resource "aws_security_group_rule" "backend_alb_bastion" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  #cidr_blocks       = ["0.0.0.0/0"]
+  source_security_group_id = module.bastion.sg_id
+  security_group_id = module.backend_alb.sg_id
+}
+
 
 # create sg for vpn
 module "vpn" {
@@ -449,7 +543,7 @@ resource "aws_security_group_rule" "shipping_vpn_http" {
   security_group_id = module.shipping.sg_id # its own source security group
 }
 
-#catalogue - bastion: 22
+#shipping - bastion: 22
 resource "aws_security_group_rule" "shipping_bastion_ssh" {
   type              = "ingress"
   from_port         = 22
@@ -515,4 +609,3 @@ resource "aws_security_group_rule" "payment_backend_alb_http" {
   source_security_group_id = module.backend_alb.sg_id # source security group
   security_group_id = module.payment.sg_id # its own source security group
 }
-
