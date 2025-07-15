@@ -7,7 +7,7 @@ variable "environment" {
 }
 
 variable "target_group_name" {
-  default = "roboshop-dev-catalogue"
+  default = "catalogue-tg"
 }
 
 variable "target_group_port" {

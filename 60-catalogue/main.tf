@@ -1,6 +1,6 @@
 # target group is our services
 resource "aws_lb_target_group" "catalogue" {
-  name     = var.target_group_name
+  name     = "${var.project}-${var.environment}-target-group"
   port     = var.target_group_port
   protocol = "HTTP"
   vpc_id   = local.vpc_id
@@ -102,15 +102,6 @@ resource "aws_launch_template" "catalogue" {
   instance_initiated_shutdown_behavior = "terminate"
   update_default_version = true # each time you update, new version will become default
   
-/*   block_device_mappings {
-    device_name = "/dev/xvda"
-    ebs {
-      volume_size           = var.volume_size
-      volume_type           = "gp2"
-      delete_on_termination = true
-    }
-  } */
-
   # instance tags created by ASG
   tag_specifications {
     resource_type = "instance"
@@ -175,7 +166,8 @@ resource "aws_autoscaling_group" "catalogue" {
     }
     
   }
-
+  # enable instance refresh
+  # this will update the instances in the ASG when launch template is updated
   instance_refresh {
     strategy = "Rolling"
     preferences {
@@ -192,8 +184,9 @@ resource "aws_autoscaling_group" "catalogue" {
 # autoscaling policy for catalogue service
 resource "aws_autoscaling_policy" "catalogue" {
   name                   = "${var.project}-${var.environment}-catalogue"
-  autoscaling_group_name = aws_autoscaling_group.catalogue.name
+  autoscaling_group_name = aws_autoscaling_group.catalogue.name # associate with ASG
   policy_type            = "TargetTrackingScaling"
+  #cooldown               = 120
   target_tracking_configuration {
     predefined_metric_specification {
       predefined_metric_type = "ASGAverageCPUUtilization"
@@ -203,13 +196,14 @@ resource "aws_autoscaling_policy" "catalogue" {
   }
 }
 
+# create listener rule for catalogue service
 resource "aws_lb_listener_rule" "catalogue" {
   listener_arn = local.backend_alb_listener_arn
-  priority     = 10
+  priority     = 10 # least priority rule 
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.catalogue.arn
+    target_group_arn = aws_lb_target_group.catalogue.arn # forward to catalogue target group
   }
 
   condition {
