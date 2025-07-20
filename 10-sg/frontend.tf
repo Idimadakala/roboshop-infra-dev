@@ -1,4 +1,4 @@
-#frontend-sg
+#frontend security group
 module "frontend" {
     source = "git::https://github.com/Idimadakala/terrafrom-aws-resources.git//modules/securitygroup?ref=develop"
     sg_name = var.frontend_sg_name
@@ -19,14 +19,24 @@ module "frontend_alb" {
     vpc_id = local.vpc_id
 }
 
+# frontend frontend_alb security group rules
+resource "aws_security_group_rule" "frontend_frontend_alb" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  source_security_group_id = module.frontend_alb.sg_id
+  security_group_id = module.frontend.sg_id
+}
+
 #Frontend ALB
 resource "aws_security_group_rule" "frontend_alb_http" {
   type              = "ingress"
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = module.backend_alb.sg_id
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.frontend_alb.sg_id
 }
 
 resource "aws_security_group_rule" "frontend_alb_https" {
@@ -34,7 +44,7 @@ resource "aws_security_group_rule" "frontend_alb_https" {
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
+  cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = module.frontend_alb.sg_id
 }
 
@@ -54,15 +64,6 @@ resource "aws_security_group_rule" "frontend_bastion" {
   to_port           = 22
   protocol          = "tcp"
   source_security_group_id = module.bastion.sg_id
-  security_group_id = module.frontend.sg_id
-}
-
-resource "aws_security_group_rule" "frontend_frontend_alb" {
-  type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-  source_security_group_id = module.frontend_alb.sg_id
   security_group_id = module.frontend.sg_id
 }
 

@@ -4,12 +4,21 @@ resource "aws_ssm_parameter" "frontend_sg_id" {
   type  = "String"
   value = module.frontend.sg_id
 }
+
+#frontend alb security group id
+resource "aws_ssm_parameter" "frontend_alb_sg_id" {
+  name  = "/${var.project}/${var.environment}/frontend_alb_sg_id"
+  type  = "String"
+  value = module.frontend_alb.sg_id
+}
+
 #bastion security group id
 resource "aws_ssm_parameter" "bastion_sg_id" {
   name  = "/${var.project}/${var.environment}/bastion_sg_id"
   type  = "String"
   value = module.bastion.sg_id
 }
+
 #backend-alb-sg-id
 resource "aws_ssm_parameter" "backend_alb_sg_id" {
   name  = "/${var.project}/${var.environment}/backend_alb_sg_id"
@@ -24,6 +33,7 @@ resource "aws_ssm_parameter" "vpn_sg_id" {
   value = module.vpn.sg_id
 }
 
+# databases - mongodb, redis, mysql, rabbitmq
 #mongodb-sg-id
 resource "aws_ssm_parameter" "mongodb_sg_id" {
   name  = "/${var.project}/${var.environment}/mongodb_sg_id"
@@ -52,6 +62,7 @@ resource "aws_ssm_parameter" "rabbitmq_sg_id" {
   value = module.rabbitmq.sg_id
 }
 
+# services - catalogue, user, cart, shipping, payment
 #cataglogue-sg-id
 resource "aws_ssm_parameter" "catalogue_sg_id" {
   name  = "/${var.project}/${var.environment}/catalogue_sg_id"
