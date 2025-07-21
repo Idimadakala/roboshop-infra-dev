@@ -32,7 +32,7 @@ resource "aws_lb_listener" "backend_alb_listener" {
 # Alias record for the ALB in Route 53
 resource "aws_route53_record" "backend_alb_alias" {
   zone_id = var.zone_id
-  name    = "*.backend-${var.environment}.${var.zone_name}"
+  name    = "*.backend-${var.environment}.${var.zone_name}" # eg: *.backend-dev.jsprajampeta.org
   type    = "A"
 
   alias {

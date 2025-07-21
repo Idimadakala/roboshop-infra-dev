@@ -1,7 +1,7 @@
 locals {
   vpc_id = data.aws_ssm_parameter.vpc_id.id
   roboshop_public_subnet_ids = split(",",data.aws_ssm_parameter.roboshop_public_subnet_ids.value)
-  frontend_alb_sg_id = data.aws_ssm_parameter.frontend_sg_id.id
+  frontend_alb_sg_id = data.aws_ssm_parameter.frontend_alb_sg_id.value
   acm_arn = data.aws_ssm_parameter.acm_arn.value
 
     common_tags = {

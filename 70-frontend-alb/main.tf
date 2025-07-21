@@ -33,14 +33,14 @@ module "alb" {
 
 # 2. ALB target group for the frontend
 resource "aws_lb_listener" "front_end" {
-  load_balancer_arn = local.acm_arn
+  load_balancer_arn = module.alb.arn
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08" # update with latest ssl policy
   certificate_arn   = local.acm_arn
 
   default_action {
-    type             = "forward"
+    type             = "fixed-response" #  expected type to be one of ["forward" "authenticate-oidc" "authenticate-cognito" "redirect" "fixed-response"]
     fixed_response {
       content_type = "text/html"
       message_body = "<h1>Hello I'm from the frontend-alb-listener navigation</h1>"

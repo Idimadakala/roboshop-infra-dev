@@ -1,7 +1,7 @@
-output "backend_alb_id"{
-    value = module.alb.id
-}
-
-output "dns" {
-    value = module.alb.dns_name  
+output "frontend_alb_details" {
+    value ={
+        id = module.alb.id
+        arn = module.alb.arn
+        dns_name = module.alb.dns_name
+    }
 }
