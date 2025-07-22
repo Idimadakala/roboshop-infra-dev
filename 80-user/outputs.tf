@@ -1,3 +1,3 @@
-output "user_instance_id"{
-    value = module.user.instance_id
+output "instance_details"{
+    value = module.user.instance_details
 }

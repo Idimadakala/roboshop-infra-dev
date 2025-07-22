@@ -1,6 +1,7 @@
 module "user" {
     #source = "../../roboshop-infra-component-module"
+    for_each = var.components
     source = "git::https://github.com/Idimadakala/roboshop-infra-component-module.git?ref=develop"
-    component = "user"
-    rule_priority = 20 # Priority for the user service and 10 for catalouge service
+    component = each.key
+    rule_priority = each.value.rule_priority
 }

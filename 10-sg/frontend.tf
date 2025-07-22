@@ -212,6 +212,7 @@ resource "aws_security_group_rule" "mongodb_bastion" {
 }
 
 # open port 27017 for mongodb-catalogue
+# mongodb should be able to connect to catalogue service
 resource "aws_security_group_rule" "mongodb_catalogue" {
   type              = "ingress"
   from_port         = 27017
@@ -222,6 +223,7 @@ resource "aws_security_group_rule" "mongodb_catalogue" {
 }
 
 # open port 27017 for mongodb-user
+# mongodb should be able to connect to user service
 resource "aws_security_group_rule" "mongodb_user" {
   type              = "ingress"
   from_port         = 27017

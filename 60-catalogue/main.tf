@@ -135,7 +135,7 @@ resource "aws_launch_template" "catalogue" {
 # provide the launch template to autoscaling group
 resource "aws_autoscaling_group" "catalogue" {
   name = "${var.project}-${var.environment}-catalogue-asg"
-  
+  # pass the launch template to ASG
   launch_template {
     id      = aws_launch_template.catalogue.id
     version = aws_launch_template.catalogue.latest_version
