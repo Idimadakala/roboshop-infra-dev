@@ -11,7 +11,7 @@ data "aws_ssm_parameter" "roboshop_public_subnet_ids"{
 data "aws_ssm_parameter" "frontend_alb_sg_id"{
     name = "/${var.project}/${var.environment}/frontend_alb_sg_id"
 }
-
+# fetch acm_arn for the frontend ALB
 data "aws_ssm_parameter" "acm_arn"{
     name = "/${var.project}/${var.environment}/acm_arn"
 }

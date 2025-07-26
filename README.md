@@ -48,3 +48,10 @@ On terraform init - Initialize the backend, module, provider plugin will be upda
 -> dev.jsprajampeta.org will return the fixed response 
 -> https://dev.jsprajampeta.org/ will return fixed-response
 
+-> http://catalogue.backend-dev.jsprajampeta.org/products
+-> http://user.backend-dev.jsprajampeta.org/health
+-> http://cart.backend-dev.jsprajampeta.org/health
+-> http://shipping.backend-dev.jsprajampeta.org/health
+-> http://shipping.backend-dev.jsprajampeta.org/health
+-> http://payment.backend-dev.jsprajampeta.org/health
+
