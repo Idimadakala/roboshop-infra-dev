@@ -14,27 +14,10 @@ module "alb" {
   })
 }
 
-# 1.fixed_response for backend-alb-listener
-/* resource "aws_lb_listener" "backend_alb_listener" {
-  load_balancer_arn = module.alb.arn
-  port              = "80"
-  protocol          = "HTTP"
-
-  default_action {
-    type = "fixed-response"
-
-    fixed_response {
-      content_type = "text/html"
-      message_body = "<h1>Hello I'm from the backend-alb-listener navigation</h1>"
-      status_code  = "200"
-    }
-  }
-} */
-
 # 2. ALB target group for the frontend
 resource "aws_lb_listener" "front_end" {
   load_balancer_arn = module.alb.arn
-  port              = "443"
+  port              = "443" # using HTTPS and for backend ALB it was HTTP:80
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08" # update with latest ssl policy
   certificate_arn   = local.acm_arn
