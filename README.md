@@ -47,11 +47,13 @@ On terraform init - Initialize the backend, module, provider plugin will be upda
 # on applying the 70-frontend-alb, alb, listener on 443, route53_record - dev.jsprajampeta.org are provisioned
 -> dev.jsprajampeta.org will return the fixed response 
 -> https://dev.jsprajampeta.org/ will return fixed-response
+-> frontend.backend-dev.jsprajampeta.org
 
 -> http://catalogue.backend-dev.jsprajampeta.org/products
 -> http://user.backend-dev.jsprajampeta.org/health
 -> http://cart.backend-dev.jsprajampeta.org/health
 -> http://shipping.backend-dev.jsprajampeta.org/health
--> http://shipping.backend-dev.jsprajampeta.org/health
 -> http://payment.backend-dev.jsprajampeta.org/health
+
+#rule_priority: determines the order of the rules of load balancer
 
