@@ -34,7 +34,7 @@ variable "components" {
             component_name = "frontend"
             instance_type  = "t3.micro"
             key_name       = "roboshop-key"
-            rule_priority  = 60  # rule_priority: This is used to determine the order of the rules in the load balancer
+            rule_priority  = 10  # rule_priority: This is used to determine the order of the rules in the load balancer
         }
     }
   

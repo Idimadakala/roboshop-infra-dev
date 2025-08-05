@@ -1,6 +1,8 @@
+# Terraform module which creates Application and Network Load Balancer resources on AWS
 module "alb" {
   source = "terraform-aws-modules/alb/aws"
-  internal = false #true
+  internal = false #true # set to true if you want to create an internal ALB
+  load_balancer_type = "application" # can be application or network
   version = "9.16.0"
   name    = "${var.project}-${var.environment}-frontend-alb"
   vpc_id  = local.vpc_id
@@ -15,7 +17,8 @@ module "alb" {
 }
 
 # 2. ALB target group for the frontend
-resource "aws_lb_listener" "front_end" {
+# Provides a Load Balancer Listener resource.
+resource "aws_lb_listener" "frontend_alb_listener" {
   load_balancer_arn = module.alb.arn
   port              = "443" # using HTTPS and for backend ALB it was HTTP:80
   protocol          = "HTTPS"
@@ -26,7 +29,7 @@ resource "aws_lb_listener" "front_end" {
     type             = "fixed-response" #  expected type to be one of ["forward" "authenticate-oidc" "authenticate-cognito" "redirect" "fixed-response"]
     fixed_response {
       content_type = "text/html"
-      message_body = "<h1>Hello I'm from the frontend-alb-listener navigation</h1>"
+      message_body = "<h1>Hello I'm from the frontend-alb-listener navigation and I use https</h1>"
       status_code  = "200"
     }
     #target_group_arn = aws_lb_target_group.front_end.arn
