@@ -3,8 +3,7 @@
 # how to check the IP details for a domain
 -> nslookup [domain] - Query DNS for domain details 
 -> nslookup mongodb-dev.jsprajampeta.org
-# nslookup for address translation to ipaddr
-# ensure hostname resolves to a valid IP
+# nslookup for address translation to ipaddr. Ensure hostname resolves to a valid IP
 telnet - mongodb-dev.jsprajampeta.org 27017 (To get the connection details)
 netcat - 
 
@@ -57,3 +56,14 @@ On terraform init - Initialize the backend, module, provider plugin will be upda
 
 #rule_priority: determines the order of the rules of load balancer
 
+# steps to define TG, ec2-instance, stop and create AMI, ASG, policies, listener rules
+1. aws_lb_target_group
+2. aws_instance
+3. null_resource is replaced with terraform_data (login and     configure the service instance)
+4. aws_ec2_instance_state
+5. aws_ami_from_instance
+6. terraform_data (to terminate the service instance)
+7. aws_launch_template (create launch temp for the service)
+8. aws_autoscaling_group (provide the launch template to autoscaling group)
+9. aws_autoscaling_policy (asg for service instance)
+10. aws_lb_listener_rule (listener rules for the service instance)
